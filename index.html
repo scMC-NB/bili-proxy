@@ -1,1 +1,46 @@
-<title>bili-proxy<title>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B站代理测试页</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+    input, button { padding: 8px; font-size: 16px; }
+    button { cursor: pointer; background: #3B8BEE; color: white; border: none; border-radius: 4px; }
+    pre { background: #f4f4f4; padding: 15px; overflow: auto; border-radius: 5px; max-height: 600px; }
+    .status { margin: 10px 0; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>B站代理测试页</h1>
+  <div>
+    <input type="text" id="keyword" value="原神" placeholder="输入搜索关键词">
+    <button onclick="search()">搜索</button>
+  </div>
+  <div class="status" id="status">等待测试...</div>
+  <pre id="result">这里会显示返回的 JSON 数据</pre>
+
+  <script>
+    async function search() {
+      const keyword = document.getElementById('keyword').value;
+      const status = document.getElementById('status');
+      const result = document.getElementById('result');
+      
+      status.innerText = '正在请求...';
+      result.innerText = '';
+      
+      try {
+        const res = await fetch('/bili?keyword=' + encodeURIComponent(keyword));
+        const data = await res.json();
+        
+        status.innerText = '请求成功！状态码: ' + res.status;
+        // 格式化 JSON，方便查看
+        result.innerText = JSON.stringify(data, null, 2);
+      } catch (e) {
+        status.innerText = '请求失败！';
+        result.innerText = e.message;
+      }
+    }
+  </script>
+</body>
+</html>
