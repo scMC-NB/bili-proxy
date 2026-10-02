@@ -20,7 +20,7 @@
   <div class="status" id="status">等待测试...</div>
   <pre id="result">这里会显示返回的 JSON 数据</pre>
 
-  <script>
+    <script>
     async function search() {
       const keyword = document.getElementById('keyword').value;
       const status = document.getElementById('status');
@@ -30,14 +30,23 @@
       result.innerText = '';
       
       try {
+        // 注意：这里的 /bili 必须和你云函数的路径完全一致！
+        // 如果你的文件在 functions/api/bili.js，这里请改成 '/api/bili'
         const res = await fetch('/bili?keyword=' + encodeURIComponent(keyword));
-        const data = await res.json();
+        const text = await res.text(); // 先拿原始文本
         
         status.innerText = '请求成功！状态码: ' + res.status;
-        // 格式化 JSON，方便查看
-        result.innerText = JSON.stringify(data, null, 2);
+        
+        try {
+          // 尝试解析 JSON
+          const data = JSON.parse(text);
+          result.innerText = JSON.stringify(data, null, 2);
+        } catch(e) {
+          // 如果解析失败，直接把后端返回的 HTML 原样显示出来
+          result.innerText = '后端返回的不是JSON，原文如下：\n\n' + text;
+        }
       } catch (e) {
-        status.innerText = '请求失败！';
+        status.innerText = '网络请求彻底失败！';
         result.innerText = e.message;
       }
     }
