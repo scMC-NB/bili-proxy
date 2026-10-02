@@ -31,8 +31,8 @@
       
       try {
         // 注意：这里的 /bili 必须和你云函数的路径完全一致！
-        // 如果你的文件在 functions/api/bili.js，这里请改成 '/api/bili'
-        const res = await fetch('/bili?keyword=' + encodeURIComponent(keyword));
+        // 注意：这里必须加上 /api，因为你的文件在 functions/api/bili.js
+const res = await fetch('/api/bili?keyword=' + encodeURIComponent(keyword));
         const text = await res.text(); // 先拿原始文本
         
         status.innerText = '请求成功！状态码: ' + res.status;
